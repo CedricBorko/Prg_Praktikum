@@ -1,0 +1,92 @@
+#include <QCoreApplication>
+#include <iostream>
+#include <random>
+
+
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<>uniform(0, 9);
+
+int staticBoard[30][30];
+int *dynamicBoard = new int[30 * 30];
+
+void printMatrix(int *a){
+
+    for(int i = 0; i < 30; i++){
+        for(int j  = 0; j < 30; j++){
+            std::cout << a[j + i * 30] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void fillDynamicBoard(){
+    for(int i = 0; i < 30 * 30; i++){
+        dynamicBoard[i] = staticBoard[i % 30][i / 30];
+    }
+
+    std::cout << std::endl;
+
+}
+
+void fillStaticBoard(){
+    for(int i = 0; i < 30; i++){
+        for(int j  = 0; j < 30; j++){
+           staticBoard[j][i] = uniform(gen);
+        }
+    }
+
+    std::cout << std::endl;
+}
+
+
+
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    fillStaticBoard();
+    fillDynamicBoard();
+
+    do{
+        std::cout << "0: Exit" << std::endl;
+        std::cout << "1: Print static board." << std::endl;
+        std::cout << "2: Copy from static to dynamic board." << std::endl;
+        std::cout << "3: Print dynamic board." << std::endl;
+
+        char userInput;
+        std::cout << "> ";
+        std::cin >> userInput;
+        switch (userInput) {
+
+            case '0':{
+                return 0;
+            }
+            case '1':{
+                printMatrix(*staticBoard);
+                break;
+            }
+            case '2':{
+                fillDynamicBoard();
+                std::cout << "Done" << std::endl;
+                break;
+            }
+            case '3':{
+                printMatrix(dynamicBoard);
+                break;
+            }
+            default:{
+                std::cout << "Invalid input... Try again" << std::endl;
+            }
+        }
+
+
+    }
+    while(true);
+
+
+
+    return a.exec();
+}
